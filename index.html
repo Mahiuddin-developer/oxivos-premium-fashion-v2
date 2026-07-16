@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oxivos | Premium Fashion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ============================================================
+           GLOBAL STYLES
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a0a1a;
+            --secondary: #1a1a2e;
+            --accent: #ff3b5c;
+            --accent-hover: #e63250;
+            --gold: #d4af37;
+            --light: #f8f7f4;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light);
+            color: var(--primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           SCROLLBAR
+           ============================================================ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+
+        /* ============================================================
+           ANIMATIONS
+           ============================================================ */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.3;
+            }
+            100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 0.6s ease-out forwards;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .animate-scale-in {
+            animation: scaleIn 0.5s ease-out forwards;
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .animate-slide-down {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+        .animate-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        /* ============================================================
+           COMPONENT STYLES
+           ============================================================ */
+
+        /* ----- Glassmorphism ----- */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .glass-white {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* ----- Navigation ----- */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        .nav-link:hover {
+            color: white;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: white;
+        }
+
+        /* ----- Product Card ----- */
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
+        }
+        .product-card .image-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: #f5f5f5;
+            aspect-ratio: 3/4;
+        }
+        .product-card .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .product-card:hover .image-wrapper img {
+            transform: scale(1.06);
+        }
+        .product-card .quick-add {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        .product-card .quick-add:hover {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.08);
+        }
+        .product-card .quick-add.added {
+            background: #16a34a;
+            color: white;
+        }
+
+        /* ----- Badges ----- */
+        .badge-instock {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(22, 163, 74, 0.9);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .badge-outstock {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .badge-new {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: var(--accent);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* ----- Buttons ----- */
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: scale(1.04);
+            box-shadow: 0 8px 30px rgba(255, 59, 92, 0.35);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.04);
+        }
+
+        /* ----- Quantity Control ----- */
+        .qty-control {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .qty-control button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.2s;
+            color: var(--primary);
+        }
+        .qty-control button:hover {
+            background: #f3f4f6;
+        }
+        .qty-control button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .qty-control span {
+            width: 44px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        /* ----- Filters ----- */
+        .filter-chip {
+            padding: 6px 18px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: white;
+            color: #4b5563;
+        }
+        .filter-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .filter-chip.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(255, 59, 92, 0.3);
+        }
+
+        /* ----- Size Options ----- */
+        .size-option {
+            padding: 6px 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            color: #4b5563;
+        }
+        .size-option:hover {
+            border-color: #9ca3af;
+        }
+        .size-option.active {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        /* ----- Color Swatches ----- */
+        .color-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .color-swatch:hover {
+            transform: scale(1.08);
+            border-color: #9ca3af;
+        }
+        .color-swatch.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 59, 92, 0.25);
+            transform: scale(1.08);
+        }
+
+        /* ----- Cart Item ----- */
+        .cart-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ----- Mobile Menu ----- */
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-menu.open {
+            max-height: 300px;
+        }
+
+        /* ----- Hero ----- */
+        .hero-gradient {
+            background: linear-gradient(160deg, #0a0a1a 0%, #1a1a2e 40%, #0a0a1a 100%);
+        }
+        .hero-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+        }
+
+        /* ----- Misc ----- */
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 2.25rem;
+            line-height: 1.2;
+        }
+        .section-title .highlight {
+            background: linear-gradient(135deg, var(--accent), #ff6b8a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @media (max-width: 640px) {
+            .section-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Empty state */
+        .empty-state .icon-wrapper {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .empty-state .icon-wrapper svg {
+            width: 44px;
+            height: 44px;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app"></div>
+
+    <script>
+        // ================================================================
+        // 1. PRODUCT DATA
+        // ================================================================
+        const PRODUCTS = [{
+            id: 1,
+            name: "Classic Cotton Panjabi",
+            category: "Panjabi",
+            price: 1490,
+            image: "image/panjabi.jpg.jpg",
+            rating: 4.5,
+            colors: ["White", "Navy", "Black"],
+            sizes: ["M", "L", "XL"],
+            inStock: true,
+            isNew: true,
+            description: "Premium cotton panjabi with intricate hand-embroidered details. Perfect for festive occasions and everyday elegance."
+        }, {
+            id: 2,
+            name: "Silk Blend Saree",
+            category: "Saree",
+            price: 2990,
+            image: "image/sari.jpg.jpg",
+            rating: 4.8,
+            colors: ["Red", "Gold", "Green"],
+            sizes: ["Free Size"],
+            inStock: true,
+            isNew: false,
+            description: "Luxurious silk blend saree with traditional zari work. A timeless piece for weddings and celebrations."
+        }, {
+            id: 3,
+            name: "Men's Linen Shirt",
+            category: "Shirt",
+            price: 890,
+            image: "image/shirt.jpg.webp",
+            colors: ["Blue", "White", "Beige"],
+            sizes: ["S", "M", "L", "XL"],
+            inStock: true,
+            isNew: false,
+            description: "Breathable linen shirt with a relaxed fit. Ideal for summer days and casual outings."
+        }, {
+            id: 4,
+            name: "Embroidered Kurta",
+            category: "Kurta",
+            price: 1890,
+            image: "image/kurta.jpg.jpg",
+            rating: 4.6,
+            colors: ["Cream", "Maroon", "Teal"],
+            sizes: ["M", "L", "XL", "XXL"],
+            inStock: true,
+            isNew: true,
+            description: "Hand-embroidered kurta with delicate thread work. A fusion of tradition and modern style."
+        }, {
+            id: 5,
+            name: "Anarkali Dress",
+            category: "Dress",
+            price: 2490,
+            image: "image/Dress.jpg.jpg",
+            rating: 4.7,
+            colors: ["Pink", "Purple", "Blue"],
+            sizes: ["S", "M", "L"],
+            inStock: true,
+            isNew: false,
+            description: "Flowing Anarkali dress with exquisite embroidery. Perfect for receptions and festive gatherings."
+        }, {
+            id: 6,
+            name: "Classic Denim Jeans",
+            category: "Jeans",
+            price: 1290,
+            image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&h=800&fit=crop&auto=format",
+            rating: 4.3,
+            colors: ["Blue", "Black", "Grey"],
+            sizes: ["28", "30", "32", "34", "36"],
+            inStock: true,
+            isNew: false,
+            description: "Premium denim jeans with a comfortable fit. Durable and stylish for everyday wear."
+        }, {
+            id: 7,
+            name: "Silk Blouse Top",
+            category: "Top",
+            price: 990,
+            image: "image/top.jpg.jpg",
+            rating: 4.4,
+            colors: ["Black", "Red", "Emerald"],
+            sizes: ["S", "M", "L", "XL"],
+            inStock: true,
+            isNew: false,
+            description: "Elegant silk blouse top with a modern silhouette. Versatile for both office and evening wear."
+        }, {
+            id: 8,
+            name: "Royal Sherwani",
+            category: "Sherwani",
+            price: 3990,
+            image: "image/sherwani.jpg.webp",
+            rating: 4.9,
+            colors: ["Gold", "Navy", "Burgundy"],
+            sizes: ["M", "L", "XL"],
+            inStock: false,
+            isNew: false,
+            description: "Royal sherwani with intricate gold embroidery. A showstopper for weddings and grand occasions."
+        }, {
+            id: 9,
+            name: "Printed Cotton Saree",
+            category: "Saree",
+            price: 1590,
+            image: "image/Cotton Saree.jpg.webp",
+            rating: 4.1,
+            colors: ["Yellow", "Orange", "Green"],
+            sizes: ["Free Size"],
+            inStock: true,
+            isNew: false,
+            description: "Lightweight cotton saree with traditional block prints. Comfortable and vibrant for daily wear."
+        }, {
+            id: 10,
+            name: "Leather Jacket",
+            category: "Jacket",
+            price: 3490,
+            image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&h=800&fit=crop&auto=format",
+            rating: 4.6,
+            colors: ["Black", "Brown", "Tan"],
+            sizes: ["S", "M", "L", "XL"],
+            inStock: true,
+            isNew: true,
+            description: "Genuine leather jacket with a classic biker design. Edgy and timeless for any wardrobe."
+        }, {
+            id: 11,
+            name: "Embroidered Dupatta",
+            category: "Accessory",
+            price: 690,
+            image: "image/Dupatta.jpg.jpg",
+            rating: 4.0,
+            colors: ["White", "Pink", "Blue"],
+            sizes: ["One Size"],
+            inStock: true,
+            isNew: false,
+            description: "Sheer dupatta with delicate embroidery. The perfect finishing touch to any ethnic outfit."
+        }, {
+            id: 12,
+            name: "Formal Trouser",
+            category: "Trouser",
+            price: 1090,
+            image: "image/Trouser.jpg.webp",
+            rating: 4.3,
+            colors: ["Grey", "Navy", "Black"],
+            sizes: ["30", "32", "34", "36", "38"],
+            inStock: true,
+            isNew: false,
+            description: "Tailored formal trousers with a sharp fit. Perfect for the office or formal events."
+        }];
+
+        // ================================================================
+        // 2. STATE MANAGEMENT
+        // ================================================================
+        let state = {
+            cart: JSON.parse(localStorage.getItem('oxivos_cart_v2')) || [],
+            currentPath: window.location.pathname,
+            searchParams: new URLSearchParams(window.location.search),
+        };
+
+        // ================================================================
+        // 3. UTILITY FUNCTIONS
+        // ================================================================
+        function saveCart() {
+            localStorage.setItem('oxivos_cart_v2', JSON.stringify(state.cart));
+        }
+
+        function getTotalItems() {
+            return state.cart.reduce((sum, item) => sum + item.quantity, 0);
+        }
+
+        function getTotalPrice() {
+            return state.cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        }
+
+        function findProduct(id) {
+            return PRODUCTS.find(p => p.id === parseInt(id));
+        }
+
+        function renderStars(rating) {
+            const full = Math.floor(rating);
+            const hasHalf = rating % 1 >= 0.5;
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < full) stars += '★';
+                else if (i === full && hasHalf) stars += '★';
+                else stars += '☆';
+            }
+            return stars;
+        }
+
+        function getCategories() {
+            return ['All', ...new Set(PRODUCTS.map(p => p.category))];
+        }
+
+        function getFilteredProducts() {
+            const category = state.searchParams.get('category') || 'All';
+            const search = state.searchParams.get('search') || '';
+            const sort = state.searchParams.get('sort') || 'default';
+
+            let result = [...PRODUCTS];
+
+            if (category !== 'All') {
+                result = result.filter(p => p.category === category);
+            }
+
+            if (search.trim()) {
+                const q = search.toLowerCase().trim();
+                result = result.filter(p =>
+                    p.name.toLowerCase().includes(q) ||
+                    p.category.toLowerCase().includes(q) ||
+                    p.description.toLowerCase().includes(q)
+                );
+            }
+
+            if (sort === 'price-asc') result.sort((a, b) => a.price - b.price);
+            else if (sort === 'price-desc') result.sort((a, b) => b.price - a.price);
+            else if (sort === 'rating') result.sort((a, b) => b.rating - a.rating);
+            else if (sort === 'newest') result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+
+            return result;
+        }
+
+        function navigate(path) {
+            state.currentPath = path;
+            window.history.pushState({}, '', path);
+            render();
+        }
+
+        function navigateWithParams(path, params) {
+            const url = new URL(path, window.location.origin);
+            Object.keys(params).forEach(key => {
+                if (params[key]) url.searchParams.set(key, params[key]);
+                else url.searchParams.delete(key);
+            });
+            navigate(url.pathname + url.search);
+        }
+
+        // ================================================================
+        // 4. CART ACTIONS
+        // ================================================================
+        function addToCart(productId) {
+            const product = findProduct(productId);
+            if (!product || !product.inStock) return;
+
+            const existing = state.cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                state.cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+            saveCart();
+
+            // Update UI feedback
+            const btn = document.querySelector(`[data-add="${productId}"]`);
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = `
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        `;
+                btn.classList.add('added');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('added');
+                }, 1200);
+            }
+
+            render();
+        }
+
+        function removeFromCart(id) {
+            state.cart = state.cart.filter(item => item.id !== id);
+            saveCart();
+            render();
+        }
+
+        function updateQuantity(id, delta) {
+            const item = state.cart.find(i => i.id === id);
+            if (!item) return;
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                state.cart = state.cart.filter(i => i.id !== id);
+            }
+            saveCart();
+            render();
+        }
+
+        function clearCart() {
+            state.cart = [];
+            saveCart();
+            render();
+        }
+
+        // ================================================================
+        // 5. RENDER FUNCTIONS
+        // ================================================================
+
+        // ----- 5a. Navbar -----
+        function renderNavbar() {
+            const totalItems = getTotalItems();
+
+            return `
+                        <nav class="sticky top-0 z-50 bg-[#0a0a1a]/95 backdrop-blur-xl border-b border-white/5">
+                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div class="flex items-center justify-between h-16 md:h-20">
+                                    <!-- Logo -->
+                                    <button onclick="navigate('/')" class="flex items-center gap-2 group">
+                                        <span class="text-2xl md:text-3xl font-bold tracking-tight">
+                                            <span class="text-white">Oxivos</span>
+                                            <span class="text-[#ff3b5c]">.</span>
+                                        </span>
+                                        <span class="hidden sm:inline text-[10px] font-medium text-white/30 tracking-widest uppercase border-l border-white/10 pl-3">
+                                            Premium
+                                        </span>
+                                    </button>
+
+                                    <!-- Desktop Nav -->
+                                    <div class="hidden md:flex items-center space-x-8">
+                                        <button onclick="navigate('/')" class="nav-link ${state.currentPath === '/' ? 'active' : ''}">
+                                            Home
+                                        </button>
+                                        <button onclick="navigate('/products')" class="nav-link ${state.currentPath === '/products' ? 'active' : ''}">
+                                            Products
+                                        </button>
+                                    </div>
+
+                                    <!-- Right side -->
+                                    <div class="flex items-center space-x-2">
+                                        <button onclick="navigate('/cart')" class="relative p-2 rounded-full hover:bg-white/5 transition-colors group">
+                                            <svg class="w-6 h-6 text-white/70 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            </svg>
+                                            ${totalItems > 0 ? `
+                                                <span class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 bg-[#ff3b5c] text-white text-[10px] font-bold rounded-full shadow-lg shadow-[#ff3b5c]/30">
+                                                    ${totalItems}
+                                                </span>
+                                            ` : ''}
+                                        </button>
+
+                                        <!-- Mobile menu toggle -->
+                                        <button onclick="document.getElementById('mobileMenu').classList.toggle('open')" class="md:hidden p-2 rounded-lg hover:bg-white/5 transition-colors">
+                                            <svg class="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Mobile Menu -->
+                                <div id="mobileMenu" class="mobile-menu md:hidden">
+                                    <div class="py-4 border-t border-white/5 space-y-1">
+                                        <button onclick="navigate('/'); document.getElementById('mobileMenu').classList.remove('open')" class="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all">
+                                            Home
+                                        </button>
+                                        <button onclick="navigate('/products'); document.getElementById('mobileMenu').classList.remove('open')" class="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all">
+                                            Products
+                                        </button>
+                                        <button onclick="navigate('/cart'); document.getElementById('mobileMenu').classList.remove('open')" class="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all flex items-center justify-between">
+                                            Cart
+                                            ${totalItems > 0 ? `<span class="bg-[#ff3b5c] text-white text-xs px-2.5 py-0.5 rounded-full">${totalItems}</span>` : ''}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    `;
+        }
+
+        // ----- 5b. Footer -----
+        function renderFooter() {
+            return `
+                        <footer class="bg-[#0a0a1a] border-t border-white/5 mt-auto">
+                            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                    <div class="md:col-span-1">
+                                        <h3 class="text-xl font-bold text-white mb-3">Oxivos<span class="text-[#ff3b5c]">.</span></h3>
+                                        <p class="text-sm text-white/40 leading-relaxed max-w-xs">
+                                            Curating the finest fashion for the modern individual. Timeless style, exceptional quality.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold text-sm mb-4">Quick Links</h4>
+                                        <ul class="space-y-3 text-sm">
+                                            <li><button onclick="navigate('/')" class="text-white/40 hover:text-white transition-colors">Home</button></li>
+                                            <li><button onclick="navigate('/products')" class="text-white/40 hover:text-white transition-colors">Products</button></li>
+                                            <li><button onclick="navigate('/cart')" class="text-white/40 hover:text-white transition-colors">Cart</button></li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold text-sm mb-4">Categories</h4>
+                                        <ul class="space-y-3 text-sm">
+                                            ${getCategories().filter(c => c !== 'All').slice(0, 4).map(c => `
+                                                <li><button onclick="navigateWithParams('/products', {category: '${c}'})" class="text-white/40 hover:text-white transition-colors">${c}</button></li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold text-sm mb-4">Connect</h4>
+                                        <p class="text-sm text-white/40 mb-4">Follow us for the latest drops and style inspiration.</p>
+                                        <div class="flex space-x-4">
+                                            <a href="#" class="text-white/30 hover:text-white transition-colors text-sm">Instagram</a>
+                                            <a href="#" class="text-white/30 hover:text-white transition-colors text-sm">Facebook</a>
+                                            <a href="#" class="text-white/30 hover:text-white transition-colors text-sm">Twitter</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-10 pt-6 border-t border-white/5 text-center text-sm text-white/30">
+                                    &copy; ${new Date().getFullYear()} Oxivos. All rights reserved. Made with ♥
+                                </div>
+                            </div>
+                        </footer>
+                    `;
+        }
+
+        // ----- 5c. Product Card -----
+        function renderProductCard(product, index) {
+            const delay = (index % 4) * 100;
+            const quickAddIcon = `
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                    `;
+
+            return `
+                        <div onclick="navigate('/product/${product.id}')" class="product-card animate-fade-up" style="animation-delay: ${delay}ms">
+                            <div class="image-wrapper">
+                                <img src="${product.image}" alt="${product.name}" loading="lazy" />
+                                ${product.inStock ? 
+                                    `<span class="badge-instock">In Stock</span>` : 
+                                    `<span class="badge-outstock">Out of Stock</span>`
+                                }
+                                ${product.isNew ? `<span class="badge-new">New</span>` : ''}
+                                ${product.inStock ? `
+                                    <button data-add="${product.id}" onclick="event.stopPropagation(); addToCart(${product.id})" class="quick-add">
+                                        ${quickAddIcon}
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <p class="text-xs text-gray-400 font-medium tracking-wider uppercase">${product.category}</p>
+                                        <h3 class="font-semibold text-gray-800 text-sm md:text-base line-clamp-1 mt-0.5">${product.name}</h3>
+                                    </div>
+                                    <span class="font-bold text-[#ff3b5c] text-sm md:text-base ml-2">৳${product.price}</span>
+                                </div>
+                                <div class="flex items-center mt-1.5 text-xs text-gray-400">
+                                    <span class="text-yellow-400 mr-1">${renderStars(product.rating)}</span>
+                                    <span>(${product.rating})</span>
+                                </div>
+                                <div class="flex flex-wrap gap-1 mt-2.5">
+                                    ${product.colors.slice(0, 3).map(c => `
+                                        <span class="w-3.5 h-3.5 rounded-full border border-gray-200" style="background-color: ${c.toLowerCase()}" title="${c}"></span>
+                                    `).join('')}
+                                    ${product.colors.length > 3 ? `<span class="text-[10px] text-gray-400 font-medium">+${product.colors.length - 3}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+        }
+
+        // ----- 5d. Home Page -----
+        function renderHome() {
+            const featured = PRODUCTS.filter(p => p.inStock).slice(0, 4);
+
+            return `
+                        <div class="page-transition">
+                            <!-- Hero -->
+                            <section class="hero-gradient relative overflow-hidden min-h-[70vh] flex items-center">
+                                <div class="hero-blob w-96 h-96 bg-[#ff3b5c]/20 top-1/4 left-1/4"></div>
+                                <div class="hero-blob w-72 h-72 bg-[#d4af37]/10 bottom-1/4 right-1/4"></div>
+                                
+                                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 relative z-10 w-full">
+                                    <div class="max-w-2xl">
+                                        <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 mb-6 animate-fade-in">
+                                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                            <span class="text-xs text-white/60 font-medium tracking-wider">New Collection 2026</span>
+                                        </div>
+                                        
+                                        <h1 class="text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-[1.1] animate-fade-up">
+                                            Elevate Your
+                                            <br />
+                                            <span class="bg-gradient-to-r from-[#ff3b5c] to-[#ff6b8a] bg-clip-text text-transparent">
+                                                Everyday Style
+                                            </span>
+                                        </h1>
+                                        
+                                        <p class="mt-4 text-white/50 text-base md:text-lg max-w-lg leading-relaxed animate-fade-up delay-200">
+                                            Discover curated fashion that blends timeless elegance with modern sophistication. 
+                                            From heritage crafts to contemporary cuts.
+                                        </p>
+                                        
+                                        <div class="mt-8 flex flex-wrap gap-4 animate-fade-up delay-300">
+                                            <button onclick="navigate('/products')" class="btn-primary">
+                                                Shop Now
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                </svg>
+                                            </button>
+                                            <button onclick="navigate('/products')" class="btn-secondary">
+                                                Explore Collection
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Featured Products -->
+                            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+                                <div class="flex items-end justify-between mb-10">
+                                    <div>
+                                        <span class="text-[#ff3b5c] text-sm font-medium tracking-widest uppercase">Featured</span>
+                                        <h2 class="section-title mt-1">
+                                            <span class="highlight">Editor's Picks</span>
+                                        </h2>
+                                        <p class="text-gray-500 text-sm mt-1.5">Handpicked pieces from our latest collection</p>
+                                    </div>
+                                    <button onclick="navigate('/products')" class="hidden sm:flex items-center gap-2 text-sm font-medium text-[#ff3b5c] hover:gap-3 transition-all">
+                                        View All
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+                                    ${featured.map((p, i) => renderProductCard(p, i)).join('')}
+                                </div>
+                            </section>
+
+                            <!-- Brand Story -->
+                            <section class="bg-white py-16 md:py-20 border-t border-gray-100">
+                                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                                    <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+                                        <div class="order-2 md:order-1">
+                                            <span class="text-[#ff3b5c] text-sm font-medium tracking-widest uppercase">Our Story</span>
+                                            <h3 class="section-title mt-2">
+                                                Crafted with <br />
+                                                <span class="highlight">Purpose & Passion</span>
+                                            </h3>
+                                            <p class="mt-4 text-gray-600 leading-relaxed">
+                                                At Oxivos, we believe fashion is more than clothing — it's an expression of identity. 
+                                                Every piece in our collection is thoughtfully curated to celebrate craftsmanship, 
+                                                quality, and the beauty of individuality.
+                                            </p>
+                                            <div class="mt-8 flex gap-10">
+                                                <div>
+                                                    <p class="text-2xl font-bold text-[#ff3b5c]">12+</p>
+                                                    <p class="text-sm text-gray-500">Collections</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-2xl font-bold text-[#ff3b5c]">500+</p>
+                                                    <p class="text-sm text-gray-500">Happy Clients</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-2xl font-bold text-[#ff3b5c]">4.8★</p>
+                                                    <p class="text-sm text-gray-500">Average Rating</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="order-1 md:order-2">
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                                                    <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=400&h=400&fit=crop&auto=format" alt="Fashion" class="w-full h-full object-cover" loading="lazy" />
+                                                </div>
+                                                <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 mt-6">
+                                                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=400&fit=crop&auto=format" alt="Fashion" class="w-full h-full object-cover" loading="lazy" />
+                                                </div>
+                                                <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100 -mt-6">
+                                                    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=400&fit=crop&auto=format" alt="Fashion" class="w-full h-full object-cover" loading="lazy" />
+                                                </div>
+                                                <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                                                    <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&h=400&fit=crop&auto=format" alt="Fashion" class="w-full h-full object-cover" loading="lazy" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    `;
+        }
+
+        // ----- 5e. Products Page -----
+        function renderProducts() {
+            const categories = getCategories();
+            const filtered = getFilteredProducts();
+            const category = state.searchParams.get('category') || 'All';
+            const search = state.searchParams.get('search') || '';
+            const sort = state.searchParams.get('sort') || 'default';
+
+            function updateFilters(cat, q, s) {
+                const params = {};
+                if (cat && cat !== 'All') params.category = cat;
+                if (q) params.search = q;
+                if (s && s !== 'default') params.sort = s;
+                navigateWithParams('/products', params);
+            }
+
+            return `
+                        <div class="page-transition max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                            <div class="mb-8">
+                                <span class="text-[#ff3b5c] text-sm font-medium tracking-widest uppercase">Browse</span>
+                                <h1 class="section-title mt-1">
+                                    All <span class="highlight">Products</span>
+                                </h1>
+                                <p class="text-gray-500 text-sm mt-1.5">${filtered.length} products found</p>
+                            </div>
+
+                            <!-- Filters -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-8 pb-6 border-b border-gray-200">
+                                <div class="relative flex-1 sm:max-w-xs">
+                                    <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search products..." 
+                                        value="${search}" 
+                                        oninput="updateFilters('${category}', this.value, '${sort}')" 
+                                        class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#ff3b5c]/40 focus:border-[#ff3b5c] transition-all"
+                                    />
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${categories.map(cat => `
+                                        <button onclick="updateFilters('${cat}', '${search}', '${sort}')" 
+                                            class="filter-chip ${cat === category ? 'active' : ''}">
+                                            ${cat}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                
+                                <select onchange="updateFilters('${category}', '${search}', this.value)" 
+                                    class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ff3b5c]/40 focus:border-[#ff3b5c] transition-all">
+                                    <option value="default" ${sort === 'default' ? 'selected' : ''}>Sort by</option>
+                                    <option value="newest" ${sort === 'newest' ? 'selected' : ''}>Newest First</option>
+                                    <option value="price-asc" ${sort === 'price-asc' ? 'selected' : ''}>Price: Low → High</option>
+                                    <option value="price-desc" ${sort === 'price-desc' ? 'selected' : ''}>Price: High → Low</option>
+                                    <option value="rating" ${sort === 'rating' ? 'selected' : ''}>Top Rated</option>
+                                </select>
+                            </div>
+
+                            <!-- Results -->
+                            ${filtered.length === 0 ? `
+                                <div class="empty-state py-16">
+                                    <div class="icon-wrapper">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-gray-700">No products found</h3>
+                                    <p class="text-gray-400 text-sm mt-2">Try adjusting your filters or search terms.</p>
+                                    <button onclick="navigate('/products')" class="mt-4 text-[#ff3b5c] font-medium hover:underline text-sm">
+                                        Clear all filters
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+                                    ${filtered.map((p, i) => renderProductCard(p, i)).join('')}
+                                </div>
+                            `}
+                        </div>
+                    `;
+        }
+
+        // ----- 5f. Product Details -----
+        function renderProductDetails() {
+            const id = parseInt(state.currentPath.split('/').pop());
+            const product = findProduct(id);
+
+            if (!product) {
+                return `
+                            <div class="max-w-7xl mx-auto px-4 py-20 text-center">
+                                <div class="empty-state max-w-md mx-auto">
+                                    <div class="icon-wrapper">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-gray-700">Product not found</h2>
+                                    <button onclick="navigate('/products')" class="btn-primary mt-6">
+                                        ← Back to products
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+            }
+
+            const cartItem = state.cart.find(item => item.id === product.id);
+            const cartQty = cartItem ? cartItem.quantity : 0;
+
+            return `
+                        <div class="page-transition max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                            <!-- Breadcrumb -->
+                            <div class="flex items-center gap-2 text-sm text-gray-400 mb-8">
+                                <button onclick="navigate('/')" class="hover:text-[#ff3b5c] transition-colors">Home</button>
+                                <span>/</span>
+                                <button onclick="navigate('/products')" class="hover:text-[#ff3b5c] transition-colors">Products</button>
+                                <span>/</span>
+                                <span class="text-gray-600">${product.name}</span>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-10 lg:gap-14">
+                                <!-- Image -->
+                                <div class="relative animate-fade-in">
+                                    <div class="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 shadow-lg">
+                                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
+                                    </div>
+                                    ${product.inStock ? 
+                                        `<span class="badge-instock">In Stock</span>` : 
+                                        `<span class="badge-outstock">Out of Stock</span>`
+                                    }
+                                    ${product.isNew ? `<span class="badge-new">New</span>` : ''}
+                                </div>
+
+                                <!-- Info -->
+                                <div class="flex flex-col animate-fade-up">
+                                    <div>
+                                        <p class="text-sm text-gray-400 font-medium tracking-wider uppercase">${product.category}</p>
+                                        <h1 class="text-3xl md:text-4xl font-bold text-[#0a0a1a] mt-1">${product.name}</h1>
+                                        <div class="flex items-center gap-3 mt-2">
+                                            <span class="text-yellow-400 text-lg">${renderStars(product.rating)}</span>
+                                            <span class="text-sm text-gray-400">${product.rating} / 5</span>
+                                        </div>
+                                        <p class="text-3xl font-bold text-[#ff3b5c] mt-4">৳${product.price}</p>
+                                    </div>
+
+                                    <div class="mt-5">
+                                        <p class="text-gray-600 leading-relaxed">${product.description}</p>
+                                    </div>
+
+                                    <!-- Colors -->
+                                    ${product.colors.length > 0 ? `
+                                        <div class="mt-6">
+                                            <p class="text-sm font-medium text-gray-700">Color: <span class="font-normal" id="selectedColor">${product.colors[0]}</span></p>
+                                            <div class="flex flex-wrap gap-2.5 mt-2" id="colorOptions">
+                                                ${product.colors.map(c => `
+                                                    <button class="color-swatch ${c === product.colors[0] ? 'active' : ''}" 
+                                                        style="background-color: ${c.toLowerCase()}" 
+                                                        title="${c}"
+                                                        onclick="document.getElementById('selectedColor').textContent='${c}'; document.querySelectorAll('.color-swatch').forEach(el => el.classList.remove('active')); this.classList.add('active')">
+                                                    </button>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+
+                                    <!-- Sizes -->
+                                    ${product.sizes.length > 0 ? `
+                                        <div class="mt-4">
+                                            <p class="text-sm font-medium text-gray-700">Size: <span class="font-normal" id="selectedSize">${product.sizes[0]}</span></p>
+                                            <div class="flex flex-wrap gap-2 mt-2">
+                                                ${product.sizes.map(s => `
+                                                    <button class="size-option ${s === product.sizes[0] ? 'active' : ''}" 
+                                                        onclick="document.getElementById('selectedSize').textContent='${s}'; document.querySelectorAll('.size-option').forEach(el => el.classList.remove('active')); this.classList.add('active')">
+                                                        ${s}
+                                                    </button>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+
+                                    <!-- Add to Cart -->
+                                    <div class="mt-6 pt-6 border-t border-gray-200">
+                                        <div class="flex items-center gap-4 flex-wrap">
+                                            <div class="qty-control">
+                                                <button onclick="updateProductQty(${product.id}, -1)" ${cartQty <= 0 ? 'disabled' : ''}>−</button>
+                                                <span id="qtyDisplay">${cartQty || 0}</span>
+                                                <button onclick="updateProductQty(${product.id}, 1)" ${!product.inStock ? 'disabled' : ''}>+</button>
+                                            </div>
+
+                                            <button onclick="addToCart(${product.id})" 
+                                                class="btn-primary flex-1 sm:flex-none px-10 py-3.5"
+                                                ${!product.inStock ? 'disabled' : ''}>
+                                                ${product.inStock ? 'Add to Cart' : 'Out of Stock'}
+                                            </button>
+                                        </div>
+                                        ${cartQty > 0 ? `
+                                            <div class="mt-3 text-sm text-green-600 flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                ${cartQty} in your cart
+                                            </div>
+                                        ` : ''}
+                                    </div>
+
+                                    <!-- Navigation -->
+                                    <div class="mt-6 flex gap-6 text-sm text-gray-400">
+                                        <button onclick="navigate('/products')" class="hover:text-[#ff3b5c] transition-colors flex items-center gap-1">
+                                            ← Back to products
+                                        </button>
+                                        <button onclick="navigate('/cart')" class="hover:text-[#ff3b5c] transition-colors flex items-center gap-1">
+                                            View Cart →
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Related Products -->
+                            <div class="mt-20">
+                                <h3 class="section-title text-2xl mb-8">
+                                    You might <span class="highlight">also like</span>
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+                                    ${PRODUCTS.filter(p => p.id !== product.id && p.category === product.category).slice(0, 4).map((p, i) => renderProductCard(p, i)).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+        }
+
+        // Helper for product detail quantity
+        function updateProductQty(id, delta) {
+            const item = state.cart.find(i => i.id === id);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    state.cart = state.cart.filter(i => i.id !== id);
+                }
+                saveCart();
+                render();
+            } else if (delta > 0) {
+                addToCart(id);
+            }
+        }
+
+        // ----- 5g. Cart Page -----
+        function renderCart() {
+            const items = state.cart;
+            const totalItems = getTotalItems();
+            const totalPrice = getTotalPrice();
+
+            if (items.length === 0) {
+                return `
+                            <div class="page-transition max-w-7xl mx-auto px-4 py-20">
+                                <div class="empty-state max-w-md mx-auto">
+                                    <div class="icon-wrapper">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-[#0a0a1a]">Your cart is empty</h2>
+                                    <p class="text-gray-500 mt-2">Looks like you haven't added anything to your cart yet.</p>
+                                    <button onclick="navigate('/products')" class="btn-primary mt-6">
+                                        Start Shopping
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+            }
+
+            return `
+                        <div class="page-transition max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                            <div class="flex items-center justify-between mb-8">
+                                <div>
+                                    <span class="text-[#ff3b5c] text-sm font-medium tracking-widest uppercase">Cart</span>
+                                    <h1 class="section-title mt-1">
+                                        Your <span class="highlight">Cart</span>
+                                    </h1>
+                                    <p class="text-gray-500 text-sm mt-1.5">${totalItems} items</p>
+                                </div>
+                                <button onclick="clearCart()" class="text-sm text-gray-400 hover:text-[#ff3b5c] transition-colors">
+                                    Clear Cart
+                                </button>
+                            </div>
+
+                            <div class="grid lg:grid-cols-3 gap-8">
+                                <!-- Cart Items -->
+                                <div class="lg:col-span-2">
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6">
+                                        ${items.map(item => `
+                                            <div class="cart-item">
+                                                <div onclick="navigate('/product/${item.id}')" class="flex-shrink-0 w-20 h-24 md:w-24 md:h-28 rounded-xl overflow-hidden bg-gray-100 cursor-pointer">
+                                                    <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover" loading="lazy" />
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div onclick="navigate('/product/${item.id}')" class="cursor-pointer">
+                                                        <h4 class="font-semibold text-gray-800 text-sm md:text-base line-clamp-1">${item.name}</h4>
+                                                    </div>
+                                                    <p class="text-sm text-gray-500">৳${item.price}</p>
+                                                    <div class="flex items-center gap-2 mt-2">
+                                                        <div class="qty-control">
+                                                            <button onclick="updateQuantity(${item.id}, -1)">−</button>
+                                                            <span>${item.quantity}</span>
+                                                            <button onclick="updateQuantity(${item.id}, 1)">+</button>
+                                                        </div>
+                                                        <button onclick="removeFromCart(${item.id})" class="ml-auto text-sm text-gray-400 hover:text-[#ff3b5c] transition-colors">
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-shrink-0 text-right">
+                                                    <span class="font-bold text-[#ff3b5c] text-sm md:text-base">
+                                                        ৳${item.price * item.quantity}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+
+                                <!-- Summary -->
+                                <div class="lg:col-span-1">
+                                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6 sticky top-24">
+                                        <h3 class="text-lg font-bold text-[#0a0a1a] mb-5">Order Summary</h3>
+
+                                        <div class="space-y-3 text-sm">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-500">Subtotal (${totalItems} items)</span>
+                                                <span class="font-medium">৳${totalPrice}</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-500">Shipping</span>
+                                                <span class="text-green-600 font-medium">Free</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-500">Tax</span>
+                                                <span class="font-medium">৳0</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="border-t border-gray-200 mt-4 pt-4">
+                                            <div class="flex justify-between text-lg font-bold">
+                                                <span>Total</span>
+                                                <span class="text-[#ff3b5c]">৳${totalPrice}</span>
+                                            </div>
+                                        </div>
+
+                                        <button onclick="alert('🎉 Checkout functionality coming soon!')" class="w-full mt-6 py-3.5 bg-[#ff3b5c] text-white font-semibold rounded-xl hover:bg-[#e63250] transition-all hover:shadow-lg hover:shadow-[#ff3b5c]/25">
+                                            Proceed to Checkout
+                                        </button>
+
+                                        <button onclick="navigate('/products')" class="block w-full text-center text-sm text-gray-400 hover:text-[#ff3b5c] transition-colors mt-3">
+                                            ← Continue Shopping
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+        }
+
+        // ================================================================
+        // 6. MAIN RENDER FUNCTION
+        // ================================================================
+        function render() {
+            const app = document.getElementById('app');
+            const path = state.currentPath;
+
+            let content = '';
+            if (path === '/') {
+                content = renderHome();
+            } else if (path === '/products') {
+                content = renderProducts();
+            } else if (path.startsWith('/product/')) {
+                content = renderProductDetails();
+            } else if (path === '/cart') {
+                content = renderCart();
+            } else {
+                content = renderHome();
+            }
+
+            app.innerHTML = `
+                        ${renderNavbar()}
+                        <main class="flex-grow">
+                            ${content}
+                        </main>
+                        ${renderFooter()}
+                    `;
+        }
+
+        // ================================================================
+        // 7. ROUTER - Handle back/forward buttons
+        // ================================================================
+        window.addEventListener('popstate', () => {
+            state.currentPath = window.location.pathname;
+            state.searchParams = new URLSearchParams(window.location.search);
+            render();
+        });
+
+        // ================================================================
+        // 8. INITIAL RENDER
+        // ================================================================
+        render();
+
+        console.log('%c🛍️ Oxivos Fashion Store', 'font-size:24px; font-weight:bold; color:#ff3b5c;');
+        console.log(`%c📦 ${PRODUCTS.length} products available`, 'font-size:14px; color:#666;');
+        console.log(`%c🛒 ${getTotalItems()} items in cart`, 'font-size:14px; color:#666;');
+        console.log('%c✨ Made with ❤️', 'font-size:12px; color:#999;');
+    </script>
+
+</body>
+</html>
